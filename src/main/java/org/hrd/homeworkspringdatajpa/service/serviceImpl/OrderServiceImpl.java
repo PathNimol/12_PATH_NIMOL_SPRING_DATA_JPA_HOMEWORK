@@ -106,16 +106,13 @@ public class OrderServiceImpl implements OrderService {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new NotFoundException("Customer not found with id: " + customerId));
 
-        // Fetch paged orders
         Page<Order> orderPage = orderRepository.findByCustomer(customer,
                 PageRequest.of(page - 1, size, Sort.by(direction, orderProperty.getFieldName())));
 
-        // Map to DTO
         List<OrderResponse> orderResponses = orderPage.stream()
                 .map(Order::toResponse)
                 .toList();
 
-        // Build pagination info
         PageResponse.Pagination pagination = new PageResponse.Pagination(
                 orderPage.getTotalElements(),
                 orderPage.getNumber() + 1,

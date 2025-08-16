@@ -54,7 +54,6 @@ public class CustomerServiceImpl implements CustomerService {
         try {
             Customer customer = request.toEntity();
 
-            // Validate CustomerAccount
             CustomerAccount account = customer.getCustomerAccount();
             if (account != null) {
                 account.setCustomer(customer); // ensure bidirectional link

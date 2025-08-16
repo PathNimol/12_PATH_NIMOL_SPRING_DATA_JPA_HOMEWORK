@@ -2,6 +2,7 @@ package org.hrd.homeworkspringdatajpa.model.enity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hrd.homeworkspringdatajpa.base.BaseController;
 import org.hrd.homeworkspringdatajpa.model.dto.response.ProductResponse;
 
 import java.math.BigDecimal;
@@ -14,7 +15,7 @@ import java.util.List;
 @Entity
 @Table(name = "products")
 @Builder
-public class Product {
+public class Product extends BaseController {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -3,16 +3,13 @@ package org.hrd.homeworkspringdatajpa.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.procedure.ProcedureOutputs;
 import org.hrd.homeworkspringdatajpa.base.ApiResponse;
 import org.hrd.homeworkspringdatajpa.model.dto.requst.ProductRequest;
 import org.hrd.homeworkspringdatajpa.model.dto.response.PageResponse;
 import org.hrd.homeworkspringdatajpa.model.dto.response.ProductResponse;
-import org.hrd.homeworkspringdatajpa.model.enity.Product;
 import org.hrd.homeworkspringdatajpa.model.enums.ProductProperty;
 import org.hrd.homeworkspringdatajpa.service.ProductService;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +20,7 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    @Operation(summary = "Get all products")
+    @Operation(summary = "List all products (paginated")
     public ResponseEntity<ApiResponse<PageResponse<ProductResponse>>> getAllProducts(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,

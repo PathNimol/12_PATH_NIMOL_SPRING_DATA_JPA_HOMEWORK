@@ -5,13 +5,17 @@ import lombok.RequiredArgsConstructor;
 import org.hrd.homeworkspringdatajpa.exception.NotFoundException;
 import org.hrd.homeworkspringdatajpa.model.dto.requst.OrderRequest;
 import org.hrd.homeworkspringdatajpa.model.dto.response.OrderResponse;
+import org.hrd.homeworkspringdatajpa.model.dto.response.PageResponse;
 import org.hrd.homeworkspringdatajpa.model.enity.*;
+import org.hrd.homeworkspringdatajpa.model.enums.OrderProperty;
 import org.hrd.homeworkspringdatajpa.model.enums.OrderStatus;
 import org.hrd.homeworkspringdatajpa.repository.CustomerRepository;
-import org.hrd.homeworkspringdatajpa.repository.OrderItemRepository;
 import org.hrd.homeworkspringdatajpa.repository.OrderRepository;
 import org.hrd.homeworkspringdatajpa.repository.ProductRepository;
 import org.hrd.homeworkspringdatajpa.service.OrderService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -27,7 +31,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final CustomerRepository customerRepository;
-    private final OrderItemRepository orderItemRepository;
 
 
     @Override
@@ -95,6 +98,32 @@ public class OrderServiceImpl implements OrderService {
     public void deleteOrderById(Long orderId) {
         Order order = orderRepository.findById(orderId).orElseThrow(()  -> new NotFoundException("Order not found with id: " + orderId));
         orderRepository.delete(order);
+    }
+    @Override
+    public PageResponse<OrderResponse> listOrdersByCustomerId(
+            Long customerId, int page, int size, OrderProperty orderProperty, Sort.Direction direction) {
+
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new NotFoundException("Customer not found with id: " + customerId));
+
+        // Fetch paged orders
+        Page<Order> orderPage = orderRepository.findByCustomer(customer,
+                PageRequest.of(page - 1, size, Sort.by(direction, orderProperty.getFieldName())));
+
+        // Map to DTO
+        List<OrderResponse> orderResponses = orderPage.stream()
+                .map(Order::toResponse)
+                .toList();
+
+        // Build pagination info
+        PageResponse.Pagination pagination = new PageResponse.Pagination(
+                orderPage.getTotalElements(),
+                orderPage.getNumber() + 1,
+                orderPage.getSize(),
+                orderPage.getTotalPages()
+        );
+
+        return new PageResponse<>(orderResponses, pagination);
     }
 
 

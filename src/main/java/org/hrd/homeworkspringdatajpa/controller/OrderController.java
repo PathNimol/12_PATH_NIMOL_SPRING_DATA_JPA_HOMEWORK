@@ -7,8 +7,11 @@ import lombok.RequiredArgsConstructor;
 import org.hrd.homeworkspringdatajpa.base.ApiResponse;
 import org.hrd.homeworkspringdatajpa.model.dto.requst.OrderRequest;
 import org.hrd.homeworkspringdatajpa.model.dto.response.OrderResponse;
+import org.hrd.homeworkspringdatajpa.model.dto.response.PageResponse;
+import org.hrd.homeworkspringdatajpa.model.enums.OrderProperty;
 import org.hrd.homeworkspringdatajpa.model.enums.OrderStatus;
 import org.hrd.homeworkspringdatajpa.service.OrderService;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +48,19 @@ public class OrderController {
     }
 
     // List orders by customer (paginated)
+    @GetMapping("/customers/{customer-id}")
+    @Operation(summary = "List orders by customer ID (paginated)")
+    public ResponseEntity<ApiResponse<PageResponse<OrderResponse>>> listOrdersByCustomerId(@Positive @PathVariable("customer-id") Long customerId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size, OrderProperty orderProperty, Sort.Direction direction) {
+
+        PageResponse<OrderResponse> orderResponse = orderService.listOrdersByCustomerId(customerId, page, size, orderProperty, direction);
+
+        ApiResponse<PageResponse<OrderResponse>> response = ApiResponse.<PageResponse<OrderResponse>>builder()
+                .message("Orders by customer ID: " + customerId + " successfully!")
+                .payload(orderResponse)
+                .status("FOUND")
+                .build();
+        return ResponseEntity.ok(response);
+    }
 
     // Update order status
     @PutMapping("/{order-id}/status")

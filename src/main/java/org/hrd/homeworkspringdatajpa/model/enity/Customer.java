@@ -2,6 +2,7 @@ package org.hrd.homeworkspringdatajpa.model.enity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hrd.homeworkspringdatajpa.base.BaseController;
 import org.hrd.homeworkspringdatajpa.model.dto.response.CustomerResponse;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 @Entity
 @Table(name = "customers")
 @Builder
-public class Customer {
+public class Customer extends BaseController {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

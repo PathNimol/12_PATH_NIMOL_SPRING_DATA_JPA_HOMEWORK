@@ -40,8 +40,6 @@ public class CustomerController {
         return ResponseEntity.ok(response);
     }
 
-
-
     // 2. Get a customer by ID
     @GetMapping("/{customer-id}")
     @Operation(summary = "Get customer by ID")

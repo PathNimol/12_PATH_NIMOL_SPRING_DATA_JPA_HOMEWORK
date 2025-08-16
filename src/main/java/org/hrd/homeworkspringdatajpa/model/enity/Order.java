@@ -1,6 +1,7 @@
 package org.hrd.homeworkspringdatajpa.model.enity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hrd.homeworkspringdatajpa.base.BaseController;
 import org.hrd.homeworkspringdatajpa.model.dto.response.OrderResponse;
 import org.hrd.homeworkspringdatajpa.model.enums.OrderStatus;
 
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "orders")
 @Builder
-public class Order {
+public class Order extends BaseController {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

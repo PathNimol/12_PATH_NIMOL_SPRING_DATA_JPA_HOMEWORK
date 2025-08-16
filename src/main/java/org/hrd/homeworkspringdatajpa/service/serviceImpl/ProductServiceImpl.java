@@ -25,8 +25,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PageResponse<ProductResponse> getAllProducts(int page, int size, ProductProperty productProperty, Sort.Direction direction) {
+        if (page < 1) page = 1;
+        if (size < 1) size = 10;
+
         Page<Product> productPage = productRepository.findAll(
-                PageRequest.of(page - 1, size, Sort.by(direction, productProperty.name().toLowerCase()))
+                PageRequest.of(page - 1, size, Sort.by(direction, productProperty.getFieldName()))
         );
 
         List<ProductResponse> productResponses = productPage.map(Product::toResponse).toList();
@@ -50,6 +53,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse createProduct(ProductRequest request) {
+
         try {
             Product product = new Product();
             product.setName(trim(request.getName()));

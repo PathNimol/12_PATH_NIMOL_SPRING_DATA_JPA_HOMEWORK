@@ -53,11 +53,21 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerResponse createCustomer(CustomerRequest request) {
         try {
             Customer customer = request.toEntity();
-            customer.getCustomerAccount().setCustomer(customer);
+
+            // Validate CustomerAccount
+            CustomerAccount account = customer.getCustomerAccount();
+            if (account != null) {
+                account.setCustomer(customer); // ensure bidirectional link
+                if (account.getIsActive() == null) {
+                    account.setIsActive(true);
+                }
+            }
 
             return customerRepository.save(customer).toResponse();
         } catch (DataIntegrityViolationException ex) {
             throw new IllegalArgumentException("Username or phone number already exists");
+        } catch (NullPointerException ex) {
+            throw new IllegalArgumentException("Customer account cannot be null");
         }
     }
 
@@ -78,6 +88,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         account.setUsername(trim(request.getUsername()));
         account.setPassword(trim(request.getPassword()));
+        account.setCustomer(customer);
 
         customer.setCustomerAccount(account);
 
@@ -92,6 +103,11 @@ public class CustomerServiceImpl implements CustomerService {
     public void deleteCustomerById(Long customerId) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new NotFoundException("Customer not found with ID: " + customerId));
+
+        if (customer.getCustomerAccount() != null) {
+            customer.getCustomerAccount().setCustomer(null);
+        }
+
         customerRepository.delete(customer);
     }
 

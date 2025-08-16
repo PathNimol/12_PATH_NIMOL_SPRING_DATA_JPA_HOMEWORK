@@ -6,17 +6,13 @@ spring:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: 151003
+
   jpa:
-    show-sql: true
     hibernate:
       ddl-auto: update
+    show-sql: true
     properties:
       hibernate:
         format_sql: true
         order_inserts: true
         order_updates: true
-
-      jakarta:
-        persistence:
-          validation:
-            mode: AUTO
